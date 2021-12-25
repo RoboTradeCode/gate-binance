@@ -35,6 +35,8 @@ int ws_balance_to_core(Json::Value &json_result) {
 
         // Отправляю сообщение по aeron в ядро
         get_balance_publisher().offer(message);
+
+        std::cout << json_result << std::endl;
     }
     return 0;
 }

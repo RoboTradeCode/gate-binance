@@ -20,6 +20,57 @@
 #include "aeron_connectors.h"
 #include "ws_handlers.h"
 
+// получает баланс пользователя, отправляет в ядро по aeron
+void send_balances_to_core() {
+    // получает данные аккаунта пользователя
+    // после этого отсеивает токены с нулевым балансом и заполняет нужные поля
+
+
+    long recvWindow = 10000;
+    Json::Value account;
+    Json::Value json_balances;
+
+    // вектор для хранения балансов по токенам
+    vector <Json::Value> balances;
+
+    // получаю данные аккаунта пользователя
+    BinaCPP::get_account(recvWindow, account);
+
+    // перебираю балансы по токенам (почти все из них нулевые)
+    for (int i = 0; i < account["balances"].size(); i++) {
+        // получаю баланс по конкретному токену
+        auto balance = account["balances"][i];
+        // проверяю, является ли баланс НЕ нулевым
+        if (stof(balance["free"].asCString()) != 0 or
+            stof(balance["locked"].asCString()) != 0) {
+            // баланс больше нуля, добавляю в вектор с балансами
+            balances.push_back(balance);
+        }
+    }
+
+    // после этого нужно перенести в json, которые соответствует принятому формату
+
+    // переношу балансы в json
+    int i = 0;
+    for (const auto& bal : balances) {
+        json_balances["B"][i]["a"] = bal["asset"];
+        json_balances["B"][i]["f"] = bal["free"];
+        json_balances["B"][i]["l"] = bal["locked"];
+        i++;
+    }
+    // тип события - такое событие соответствует обновлению балансу пользователя
+    // в этом случае это неправда - баланс не обновился. Но с этим полем можно использовать
+    // обработчик ws_balance_to_core(), не создавать отдельную функцию
+    json_balances["e"] = "outboundAccountPosition";
+    // время последнего обновления
+    json_balances["u"] = account["updateTime"];
+    // текущее время
+    json_balances["E"] = static_cast<double>(get_unix_timestamp());
+
+    // отправляю полученный json в ядро по aeron
+    ws_balance_to_core(json_balances);
+}
+
 // Запрашиваю у биржи ключ user data для получения баланса
 // ключ нужно будет запрашивать снова, иначе он истечет через 60 минут
 string get_listenKey() {
@@ -175,6 +226,8 @@ int main() {
             sleep(10);
     }
 
+    //  отправляю текущий баланс в ядро
+    send_balances_to_core();
 
     // Подключение веб-сокетов Binance, для получения данных по стакану и
     // данных о балансе пользователя. Это позволяет не

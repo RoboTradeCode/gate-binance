@@ -6,11 +6,13 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(SRC_DIR src)
 
+# библиотека BinanceCPP
 set(BINACPP_SRC lib/libbinacpp/src)
 set(BINACPP_LIB_DIR lib/libbinacpp/lib/libbinacpp/lib)
 set(WEBSOCKETS_DIR lib/libbinacpp/lib/libwebsockets-2.4.0)
 set(JSONCPP_SRC lib/libbinacpp/lib/jsoncpp-1.8.3/include)
 
+# библиотека aeron
 set(AERON_DIR lib/aeron)
 set(AERON_UTILS_DIR lib/aeron_utils)
 
@@ -18,7 +20,9 @@ include_directories(${AERON_DIR}/aeron-client/src/main/cpp)
 
 find_library(AERON_CLIENT_LIB aeron_client ${AERON_DIR}/cppbuild/Release/lib/)
 
+
 find_library(WEBSOCKETS_LIB websockets ${WEBSOCKETS_DIR}/lib)
+
 
 find_package(jsoncpp REQUIRED)
 find_package(OpenSSL REQUIRED)

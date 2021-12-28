@@ -44,6 +44,7 @@ Json::Value send_order(Json::Value core_order) {
 
     // здесь повторная инициализация класса библиотеки Binance С++
     // это нужно, иначе в непрерывной сессии BinCPP могут начаться ошибки
+    BinaCPP::cleanup();
     BinaCPP::init(api_key, secret_key);
 
     // json для результата отправки ордера
@@ -86,6 +87,7 @@ Json::Value send_order(Json::Value core_order) {
         // проверка, что ордер для отмены был найден
         if (current_order != 0) {
             std::cout << "Attempt to cancel order" << std::endl;
+            BinaCPP::cleanup();
             BinaCPP::init(api_key, secret_key);
             BinaCPP::cancel_order(
                     core_order["S"].asCString(),

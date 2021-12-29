@@ -61,7 +61,7 @@ void _send_order(Json::Value j, const Json::Value& order)
     VLOG(1) << message;
     LOG(INFO) << std::fixed << j["T"] << "\t" << j["s"] << "\t" << j["b"] << "\t" << min_bid << "\t" << max_bid << "\t"
               << j["a"] << "\t" << min_ask << "\t" << max_ask << "\t" << btc_balance << "\t" << usdt_balance << "\t"
-              << order["a"] << "\t" << order["s"] << "\t" << "" << "\t" << "";
+              << order["a"] << "\t" << order["s"] << "\t" << order["p"] << "\t" << order["q"];
 
     gateway->offer(message);
 }
@@ -110,7 +110,7 @@ void cancel_order(Json::Value j, const std::string& side)
     else if (side == "BUY")
         has_bid_orders = false;
 
-    send_order(std::move(j), order);
+    _send_order(std::move(j), order);
 }
 
 /**

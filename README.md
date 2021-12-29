@@ -59,7 +59,7 @@ make
 конфигурации). Одна команда — одна строка. Значения разделяются символом табуляции:
 
 ```
-log_ts receive_ts best_bid min_bid max_bid best_ask min_ask max_ask btc_balance usdt_balance action side price quantity
+log_ts receive_ts symbol best_bid min_bid max_bid best_ask min_ask max_ask btc_balance usdt_balance action side price quantity
 ```
 
 В файл `errors.log` записываются ошибки, которые приходят от шлюза:

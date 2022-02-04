@@ -17,6 +17,9 @@ int ws_depth_to_core(Json::Value &json_result) {
     // добавляю в json поле для unix timestamp
     json_result["u"] = timestamp;
 
+    // биржа, от который получены данные
+    json_result["exchange"] = global_config.exchange_name;
+
     // конвертирую json::value в строку
     std::string message = json_result.toStyledString();
 

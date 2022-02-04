@@ -38,14 +38,10 @@ bool is_error_json(const Json::Value& json_value) {
 // функция для обработки и отправки ордера от ядра в binance
 Json::Value send_order(Json::Value core_order) {
 
-    // инициализация ключей Binance API
-    std::string api_key = API_KEY;
-    std::string secret_key = SECRET_KEY;
-
     // здесь повторная инициализация класса библиотеки Binance С++
     // это нужно, иначе в непрерывной сессии BinCPP могут начаться ошибки
     BinaCPP::cleanup();
-    BinaCPP::init(api_key, secret_key);
+    BinaCPP::init(global_config.api_key, global_config.secret_key);
 
     // json для результата отправки ордера
     Json::Value result;
@@ -88,7 +84,7 @@ Json::Value send_order(Json::Value core_order) {
         if (current_order != 0) {
             std::cout << "Attempt to cancel order" << std::endl;
             BinaCPP::cleanup();
-            BinaCPP::init(api_key, secret_key);
+            BinaCPP::init(global_config.api_key, global_config.secret_key);
             BinaCPP::cancel_order(
                     core_order["S"].asCString(),
                     current_order,

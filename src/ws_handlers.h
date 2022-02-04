@@ -5,6 +5,7 @@
 #include "binacpp.h"
 #include "utils.h"
 #include "aeron_connectors.h"
+#include "global_config.h"
 
 // обработка веб-сокета Individual Symbol Ticker Stream (стакан)
 int ws_depth_to_core(Json::Value &json_result);

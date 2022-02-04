@@ -20,19 +20,16 @@ secret_key = "V9fu4jT21mzejk0sdq3jutubN6xxLMvBtY6ZKRJYXb3kNlYMJfoeTxXG8qDweRek"
         # или
         # ["aeron:ipc", 111]
 
-#        orderbook = ["aeron:udp?control=172.31.14.205:40456|control-mode=dynamic", 111]
-        orderbook = ["aeron:ipc", 100]
+        orderbook = ["aeron:udp?control=172.31.14.205:40456|control-mode=dynamic", 111]
         # настройки publishers осуществляющего отправку баланса
         #        balance = ["aeron:ipc", 111]
         balance = ["aeron:ipc", 101]
 
         # настройки publishers осуществляющего отправку логов
         # ["channel", channel_id]
-#        logs = ["aeron:udp?endpoint=54.248.171.18:20121", 1001]
-        logs = ["aeron:ipc", 102]
+        logs = ["aeron:udp?endpoint=3.66.183.27:44444", 1001]
     # Настройки относящиеся к приему данных.
     [aeron.subscribers]
         # канал в котором приходят команды от ядра.
-        # ["aeron:ipc", 111]
 #        core = ["aeron:udp?endpoint=54.248.171.18:20121", 555]
         core = ["aeron:ipc", 103]

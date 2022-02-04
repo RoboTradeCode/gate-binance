@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.12)
 
 project(BinanceConnector)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 
 set(SRC_DIR src)
 
-# библиотека BinanceCPP
+# библиотека BinaCPP
 set(BINACPP_SRC lib/libbinacpp/src)
 set(BINACPP_LIB_DIR lib/libbinacpp/lib/libbinacpp/lib)
 set(WEBSOCKETS_DIR lib/libbinacpp/lib/libwebsockets-2.4.0)
@@ -20,123 +20,62 @@ include_directories(${AERON_DIR}/aeron-client/src/main/cpp)
 
 find_library(AERON_CLIENT_LIB aeron_client ${AERON_DIR}/cppbuild/Release/lib/)
 
-
 find_library(WEBSOCKETS_LIB websockets ${WEBSOCKETS_DIR}/lib)
-
 
 find_package(jsoncpp REQUIRED)
 find_package(OpenSSL REQUIRED)
 
-add_library(
-        BinaCpp
+add_executable(
+        ${PROJECT_NAME}
+#        main file, entry point of gateway
+        main.cpp
+#        toml++ library for config
+        lib/toml++/toml.h
+
+        ${WEBSOCKETS_DIR}/include
+#        own library for working with aeron
+        ${AERON_UTILS_DIR}/Publisher.cpp
+        ${AERON_UTILS_DIR}/Publisher.h
+        ${AERON_UTILS_DIR}/Subscriber.cpp
+        ${AERON_UTILS_DIR}/Subscriber.h
+#        sources
+        ${SRC_DIR}/ws_handlers.cpp
+        ${SRC_DIR}/ws_handlers.h
+        ${SRC_DIR}/utils.cpp
+        ${SRC_DIR}/utils.h
+        ${SRC_DIR}/aeron_connectors.cpp
+        ${SRC_DIR}/aeron_connectors.h
+        ${SRC_DIR}/order_handlers.h
+        ${SRC_DIR}/order_handlers.cpp
+        ${SRC_DIR}/gate_config.h
+        ${SRC_DIR}/aeron_channel.h
+#        BinaCPP library
         ${BINACPP_SRC}/binacpp.cpp
         ${BINACPP_SRC}/binacpp_logger.cpp
         ${BINACPP_SRC}/binacpp_utils.cpp
         ${BINACPP_SRC}/binacpp_websocket.cpp
-        )
-
-add_library(
-        Aeron
-        ${AERON_UTILS_DIR}/Publisher.cpp
-        ${AERON_UTILS_DIR}/Subscriber.cpp
-)
-add_library(
-        JsonCPP
-        INTERFACE
-)
-add_library(
-        GateLogic
-        ${SRC_DIR}
-        ${SRC_DIR}/aeron_connectors.cpp
-        ${SRC_DIR}/order_handlers.cpp
-        ${SRC_DIR}/utils.cpp
-        ${SRC_DIR}/ws_handlers.cpp
-)
-add_library(
-        WebsocketsInterface
-        ${WEBSOCKETS_DIR}/include
-)
-add_executable(
-        ${PROJECT_NAME}
-        main.cpp
-)
+        src/global_config.h)
 
 target_include_directories(
-        BinaCpp
+        ${PROJECT_NAME}
         PUBLIC
+        ${SRC_DIR}
+#
+#        websockets library, for BinaCPP lib
+        ${WEBSOCKETS_DIR}/include
+#        JsonCpp library, for BinaCPP lib
+        ${JSONCPP_SRC}
+        ${AERON_UTILS_DIR}
         ${BINACPP_SRC}
 )
-target_include_directories(
-        Aeron
-        PUBLIC
-        ${AERON_UTILS_DIR}
-)
-target_include_directories(
-        JsonCPP
-        INTERFACE
-        ${JSONCPP_SRC}
-)
-target_include_directories(
-        GateLogic
-        PUBLIC
-        ${AERON_UTILS_DIR}
-        ${UNITS_DIR}
-)
-#target_include_directories(
-#        GateLogic
-#        PRIVATE
-#        ${AERON_UTILS_DIR}
-#        ${UNITS_DIR}
-#)
-target_include_directories(
-        WebsocketsInterface
-        INTERFACE
-        ${WEBSOCKETS_DIR}/include
-)
-target_include_directories(
-        ${PROJECT_NAME}
-        PRIVATE
-        ${SRC_DIR}
-)
-
 
 target_link_libraries(
-        BinaCpp
+        ${PROJECT_NAME}
         PRIVATE
-        WebsocketsInterface
+        jsoncpp
         ${WEBSOCKETS_LIB}
         pthread
         curl
-        JsonCPP
         OpenSSL::SSL
-)
-target_link_libraries(
-        JsonCPP
-        INTERFACE
-        jsoncpp
-)
-target_link_libraries(
-        Aeron
-        PUBLIC
         ${AERON_CLIENT_LIB}
 )
-target_link_libraries(
-        GateLogic
-        PRIVATE
-        Aeron
-        BinaCpp
-        JsonCPP
-        ${CMAKE_THREAD_LIBS_INIT}
-        ${AERON_CLIENT_LIB}
-)
-target_link_libraries(
-        ${PROJECT_NAME}
-        PRIVATE
-        GateLogic
-        WebsocketsInterface
-        Aeron
-        BinaCpp
-        JsonCPP
-)
-
-set_target_properties(BinaCpp WebsocketsInterface PROPERTIES LINKER_LANGUAGE CXX)

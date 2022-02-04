@@ -2,8 +2,8 @@
 
 // получение Publisher, в который будут отправляться данные эндпоинта
 // Individual Symbol Ticker Stream (стакан)
-Publisher get_depth_publisher() {
-    static Publisher depth_publisher = Publisher("aeron:ipc", 100);
+Publisher get_depth_publisher(const std::string& channel, int stream_id) {
+    static Publisher depth_publisher = Publisher(channel, stream_id);
     static int flag = -1;
     if (flag == -1) {
         flag = depth_publisher.connect();
@@ -13,8 +13,8 @@ Publisher get_depth_publisher() {
 
 // получение Publisher, в который будут отправляться данные эндпоинта
 // User Data Stream (баланс пользователя)
-Publisher get_balance_publisher() {
-    static Publisher balance_publisher = Publisher("aeron:ipc", 101);
+Publisher get_balance_publisher(const std::string& channel, int stream_id) {
+    static Publisher balance_publisher = Publisher(channel, stream_id);
     static int flag = -1;
     if (flag == -1) {
         flag = balance_publisher.connect();
@@ -23,8 +23,8 @@ Publisher get_balance_publisher() {
 }
 
 // получение Publisher, в который будут отправляться ошибки
-Publisher get_errors_publisher() {
-    static Publisher errors_publisher = Publisher("aeron:ipc", 102);
+Publisher get_errors_publisher(const std::string& channel, int stream_id) {
+    static Publisher errors_publisher = Publisher(channel, stream_id);
     static int flag = -1;
     if (flag == -1) {
         flag = errors_publisher.connect();
@@ -33,8 +33,8 @@ Publisher get_errors_publisher() {
 }
 
 // получение Subscriber, в который ядро передает ордера
-Subscriber get_order_subscriber() {
-    static Subscriber order_subscriber = Subscriber(&handle_core_order, "aeron:ipc", 103);
+Subscriber get_order_subscriber(const std::string& channel, int stream_id) {
+    static Subscriber order_subscriber = Subscriber(&handle_core_order, channel, stream_id);
     static int flag = -1;
     if (flag == -1) {
         flag = order_subscriber.connect();

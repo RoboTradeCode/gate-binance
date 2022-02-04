@@ -15,7 +15,7 @@
 #include "Publisher.h"
 #include "Subscriber.h"
 
-#include "config.h"
+#include "global_config.h"
 #include "order_handlers.h"
 #include "aeron_connectors.h"
 #include "ws_handlers.h"
@@ -178,16 +178,19 @@ int main() {
      * - Запуск главного цикла
      */
 
-    // инициализация API ключей Binance, нужных для получения данных
-    // и выставления ордеров
-    // информацию по балансу пользователя.
-    std::string api_key = API_KEY;
-    std::string secret_key = SECRET_KEY;
+
+    // загрузка конфигурации шлза
+    gate_config config = gate_config("../config.toml");
+
+
+    // Инициализрую переменные, которые будут использоваться в других частях шлюза
+    global_config.exchange_name = config.exchange.name;
+    global_config.api_key = config.account.api_key;
+    global_config.secret_key = config.account.secret_key;
 
     // инициализация классов для работы с Binance API
-    BinaCPP::init(api_key, secret_key);
+    BinaCPP::init(global_config.api_key, global_config.secret_key);
     BinaCPP_websocket::init();
-
 
     // Подключение к каналам Aeron. Всего четыре канала:
     // 1. Канал отправки данных стакана
@@ -198,14 +201,18 @@ int main() {
     // массив Publisher, к которым нужно подключиться
     // они нужны для отправки данных ядру
     Publisher publisher_connection_targets[] {
-            get_depth_publisher(),   // отправка стакана
-            get_balance_publisher(), // отправка баланса
-            get_errors_publisher()   // отправка ошибок
+            get_depth_publisher(config.aeron.publishers.orderbook.channel,
+                                config.aeron.publishers.orderbook.stream_id),   // отправка стакана
+            get_balance_publisher(config.aeron.publishers.balance.channel,
+                                  config.aeron.publishers.balance.stream_id), // отправка баланса
+            get_errors_publisher(config.aeron.publishers.logs.channel,
+                                 config.aeron.publishers.logs.stream_id)   // отправка ошибок
     };
 
     // массив Subscriber, к которым нужно подключиться
     Subscriber subscriber_connection_targets[] {
-            get_order_subscriber()  // получение ордеров
+            get_order_subscriber(config.aeron.subscribers.core.channel,
+                                 config.aeron.subscribers.core.stream_id)  // получение ордеров
     };
 
     // попытка подключения всех Publisher и Subscriber к Aeron Media Driver

@@ -1,5 +1,4 @@
 build
-config.h
 .idea
 cmake-build-debug
 

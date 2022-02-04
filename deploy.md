@@ -25,11 +25,18 @@ sudo apt install libjsoncpp-dev libcurl4-openssl-dev
    
    3. Установите библиотеку `sudo apt install libssl1.0.0`
    
-3.  Соберите библиотеку Aeron. Для этого перейдите в папку `aeron` и выполните команду:
+5. Соберите библиотеку Aeron. Для этого перейдите в папку `aeron` и выполните команду:
 
 `./cppbuild/cppbuild`
 
-Полный список команд приерно такой:
+6. *Не обязательно*. Обновить библиотеку для конфигурации Toml++, т.е.
+удалить директорию `toml++`, которая находится в `lib`, и скопировать в директорию `lib`
+следующую директорию из github:
+
+https://github.com/marzer/tomlplusplus/tree/master/include/toml%2B%2B
+
+
+Полный список команд примерно такой:
 
 ```bash
 git clone # адрес репозиторий Gateway

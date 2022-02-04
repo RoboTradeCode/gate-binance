@@ -8,10 +8,14 @@
 
 #include "json/json.h"
 
+// Следующие define нужны для того, чтобы можно было использовать
+// приватное поле класса BinaCPP
+#define class struct
 #include "binacpp.h"
+#undef class
 #include "Publisher.h"
 #include "Subscriber.h"
-#include "../config.h"
+#include "global_config.h"
 #include "aeron_connectors.h"
 #include "utils.h"
 

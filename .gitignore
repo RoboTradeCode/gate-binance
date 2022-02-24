@@ -37,6 +37,5 @@ cmake-build-debug
 *.zip
 
 # Libs
-lib/aeron
-lib/libbinacpp
+libs/
 

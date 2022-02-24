@@ -40,7 +40,7 @@ https://github.com/marzer/tomlplusplus/tree/master/include/toml%2B%2B
 
 ```bash
 git clone # адрес репозиторий Gateway
-cd lib
+cd libs
 git clone https://github.com/real-logic/aeron.git
 git clone https://github.com/binance-exchange/binacpp.git
 sudo apt install libjsoncpp-dev libcurl4-openssl-dev 

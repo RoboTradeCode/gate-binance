@@ -15,3 +15,11 @@ Json::Value read_raw_json(const std::string& raw_json) {
     reader.parse(raw_json, json_value);
     return json_value;
 }
+
+// функция для парсинга json
+Json::Value read_raw_json(std::string_view raw_json) {
+    Json::Value json_value;
+    Json::Reader reader;
+    reader.parse(std::string(raw_json), json_value);
+    return json_value;
+}

@@ -12,13 +12,14 @@
 #include "binacpp_websocket.h"
 #undef class
 
-#include "Publisher.h"
-#include "Subscriber.h"
+#include "../libs/aeron_cpp/src/Publisher.h"
+#include "../libs/aeron_cpp/src/Subscriber.h"
 
-#include "global_config.h"
 #include "order_handlers.h"
 #include "aeron_connectors.h"
 #include "ws_handlers.h"
+
+shared_ptr<gate_config> config;
 
 // получает баланс пользователя, отправляет в ядро по aeron
 void send_balances_to_core() {
@@ -124,15 +125,12 @@ void connect_ws() {
      не сделать, то поток данных прервется через некоторое время.
      */
     while (true) {
-        // получаю subscriber, отвечающий за получение ордеров
-        Subscriber order_subscriber = get_order_subscriber();
-
         /* 1 */
         // Получение непрочитанных сообщений об ордерах из Aeron и их
         // обработка, если они имеются. Gateway формирует ордер, отправляет
         // его в Binance API, и обрабатывает ответ. Если Binance сообщает
         // о неправильном ордере, отправляет сообщение ядру через канал Aeron.
-        order_subscriber.poll();
+        order_subscriber->poll();
 
         /* 2 */
         // Обработка данных, которые получают веб-сокеты. Данные по стакану
@@ -179,15 +177,11 @@ int main() {
      */
 
     // загрузка конфигурации шлза
-    gate_config config = gate_config("config.toml");
+    config = make_shared<gate_config>("config.toml");
 
-    // Инициализрую переменные, которые будут использоваться в других частях шлюза
-    global_config.exchange_name = config.exchange.name;
-    global_config.api_key = config.account.api_key;
-    global_config.secret_key = config.account.secret_key;
 
     // инициализация классов для работы с Binance API
-    BinaCPP::init(global_config.api_key, global_config.secret_key);
+    BinaCPP::init(config->account.api_key, config->account.secret_key);
     BinaCPP_websocket::init();
 
     // Подключение к каналам Aeron. Всего четыре канала:
@@ -196,40 +190,23 @@ int main() {
     // 3. Канал отправки ошибок
     // 4. Канал получения команд на управление ордерами от ядра (создание и отмена)
 
-    // массив Publisher, к которым нужно подключиться
+    // Publisher's, к которым нужно подключиться
     // они нужны для отправки данных ядру
-    Publisher publisher_connection_targets[] {
-            get_depth_publisher(config.aeron.publishers.orderbook.channel,
-                                config.aeron.publishers.orderbook.stream_id),   // отправка стакана
-            get_balance_publisher(config.aeron.publishers.balance.channel,
-                                  config.aeron.publishers.balance.stream_id), // отправка баланса
-            get_errors_publisher(config.aeron.publishers.logs.channel,
-                                 config.aeron.publishers.logs.stream_id)   // отправка ошибок
-    };
+    // отправка стакана
+    depth_publisher = std::make_shared<Publisher>(config->aeron.publishers.orderbook.channel,
+                                                  config->aeron.publishers.orderbook.stream_id);
+    // отправка баланса
+    balance_publisher = std::make_shared<Publisher>(config->aeron.publishers.balance.channel,
+                                                    config->aeron.publishers.balance.stream_id);
+    // отправка ошибок
+    errors_publisher = make_shared<Publisher>(config->aeron.publishers.logs.channel,
+                                              config->aeron.publishers.logs.stream_id);
 
-    // массив Subscriber, к которым нужно подключиться
-    Subscriber subscriber_connection_targets[] {
-            get_order_subscriber(config.aeron.subscribers.core.channel,
-                                 config.aeron.subscribers.core.stream_id)  // получение ордеров
-    };
+    //Subscriber, к которому нужно подключиться
+    // получение ордеров
+    order_subscriber = std::make_shared<Subscriber>(handle_core_order, config->aeron.subscribers.core.channel,
+                                                    config->aeron.subscribers.core.stream_id);
 
-    // попытка подключения всех Publisher и Subscriber к Aeron Media Driver
-    int connection = -1;
-    while (connection != 0) {
-        connection = 0;
-        // при удачной попытке метод connect() возвращает 0
-        // при неудачной попытке метод connect() возвращает -1
-        for (auto it : publisher_connection_targets) {
-            connection += it.connect();
-        }
-        for (auto it : subscriber_connection_targets) {
-            connection += it.connect();
-        }
-        // при неудачной попытке сплю десять секунд,
-        // чтобы не спамить подключениями
-        if (connection != 0)
-            sleep(10);
-    }
 
     //  отправляю текущий баланс в ядро
     send_balances_to_core();

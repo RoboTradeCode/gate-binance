@@ -31,7 +31,7 @@ int send_error_to_core(int code, const std::string& point, const std::string& de
     std::string message = error_json.toStyledString();
 
     // Отправляю сообщение
-    get_errors_publisher().offer(message);
+    errors_publisher->offer(message);
 
     return 0;
 }
@@ -48,7 +48,7 @@ Json::Value send_order(Json::Value core_order) {
     // здесь повторная инициализация класса библиотеки Binance С++
     // это нужно, иначе в непрерывной сессии BinCPP могут начаться ошибки
     BinaCPP::cleanup();
-    BinaCPP::init(global_config.api_key, global_config.secret_key);
+    BinaCPP::init(config->account.api_key, config->account.secret_key);
 
     // json для результата отправки ордера
     Json::Value result;
@@ -94,7 +94,7 @@ Json::Value send_order(Json::Value core_order) {
         if (current_order != 0) {
             std::cout << "Attempt to cancel order" << std::endl;
             BinaCPP::cleanup();
-            BinaCPP::init(global_config.api_key, global_config.secret_key);
+            BinaCPP::init(config->account.api_key, config->account.secret_key);
             BinaCPP::cancel_order(
                     core_order["S"] == "BTC-USDT" ? "BTCUSDT" : core_order["S"].asCString(),
                     current_order,

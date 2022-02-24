@@ -28,7 +28,7 @@ int ws_depth_to_core(Json::Value &json_result) {
     std::string message = json_result.toStyledString();
 
     // Отправляю сообщение
-    auto result = get_depth_publisher().offer(message);
+    depth_publisher->offer(message);
     return 0;
 }
 
@@ -41,7 +41,7 @@ int ws_balance_to_core(Json::Value &json_result) {
         std::string message = json_result.toStyledString();
 
         // Отправляю сообщение по aeron в ядро
-        get_balance_publisher().offer(message);
+        balance_publisher->offer(message);
 
         std::cout << json_result << std::endl;
     }

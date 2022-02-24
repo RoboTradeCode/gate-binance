@@ -13,8 +13,8 @@
 #define class struct
 #include "binacpp.h"
 #undef class
-#include "Publisher.h"
-#include "Subscriber.h"
+#include "../libs/aeron_cpp/src/Publisher.h"
+#include "../libs/aeron_cpp/src/Subscriber.h"
 #include "global_config.h"
 #include "aeron_connectors.h"
 #include "utils.h"

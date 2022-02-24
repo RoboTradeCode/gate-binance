@@ -8,7 +8,7 @@
 
 #include "aeron_channel.h"
 
-#include "../toml++/toml.h"
+#include "../libs/tomlplusplus/include/toml++/toml.h"
 
 struct gate_config{
     struct {

@@ -14,7 +14,8 @@ set(JSONCPP_SRC libs/binacpp/lib/jsoncpp-1.8.3/include)
 
 # библиотека aeron
 set(AERON_DIR ../aeron)
-set(AERON_UTILS_DIR libs/aeron_utils)
+
+set(AERON_CPP_DIR libs/aeron_cpp/src)
 
 include_directories(${AERON_DIR}/aeron-client/src/main/cpp)
 
@@ -30,14 +31,14 @@ add_executable(
         #        main file, entry point of gateway
         main.cpp
         #        toml++ library for config
-        libs/toml++/toml.h
+        libs/tomlplusplus/include/toml++/toml.h
 
         ${WEBSOCKETS_DIR}/include
         #        own library for working with aeron
-        ${AERON_UTILS_DIR}/Publisher.cpp
-        ${AERON_UTILS_DIR}/Publisher.h
-        ${AERON_UTILS_DIR}/Subscriber.cpp
-        ${AERON_UTILS_DIR}/Subscriber.h
+        ${AERON_CPP_DIR}/Publisher.cpp
+        ${AERON_CPP_DIR}/Publisher.h
+        ${AERON_CPP_DIR}/Subscriber.cpp
+        ${AERON_CPP_DIR}/Subscriber.h
         #        sources
         ${SRC_DIR}/ws_handlers.cpp
         ${SRC_DIR}/ws_handlers.h

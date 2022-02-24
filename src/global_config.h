@@ -6,14 +6,6 @@
 #include <string>
 #include "gate_config.h"
 
-static struct global_config {
-// переменная, хранящая название биржи (указывается в отправляемых сообщениях по aeron)
-    std::string exchange_name;
 
-// инициализация API ключей Binance, нужных для получения данных
-// и выставления ордеров
-// информацию по балансу пользователя.
-    std::string api_key;
-    std::string secret_key;
-} global_config;
+extern shared_ptr<gate_config> config;
 

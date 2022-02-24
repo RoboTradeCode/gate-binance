@@ -179,7 +179,7 @@ int main() {
      */
 
     // загрузка конфигурации шлза
-    gate_config config = gate_config("../config.toml");
+    gate_config config = gate_config("config.toml");
 
     // Инициализрую переменные, которые будут использоваться в других частях шлюза
     global_config.exchange_name = config.exchange.name;

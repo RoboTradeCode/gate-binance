@@ -79,3 +79,5 @@ target_link_libraries(
         OpenSSL::SSL
         ${AERON_CLIENT_LIB}
 )
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.toml ${CMAKE_CURRENT_BINARY_DIR}/config.toml COPYONLY)

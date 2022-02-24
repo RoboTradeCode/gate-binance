@@ -1,7 +1,7 @@
 # раздел содержит информацию относительно настроек биржы
 [exchange]
 # имя биржи, записывается в сообщениях, которые отправляет данный шлюз
-name = "binance"
+name = "Binance"
 
 # настройки аккаунта
 [account]
@@ -13,23 +13,23 @@ secret_key = "V9fu4jT21mzejk0sdq3jutubN6xxLMvBtY6ZKRJYXb3kNlYMJfoeTxXG8qDweRek"
 
 # настройки транспортного уровня
 [aeron]
-    # Настройки относящиеся к отправке данных
-    [aeron.publishers]
-        # настройки канала для publishers рассылающего market data
-        # ["aeron:udp?control=172.31.14.205:40456|control-mode=dynamic", 111]
-        # или
-        # ["aeron:ipc", 111]
+# Настройки относящиеся к отправке данных
+[aeron.publishers]
+# настройки канала для publishers рассылающего market data
+# ["aeron:udp?control=172.31.14.205:40456|control-mode=dynamic", 111]
+# или
+# ["aeron:ipc", 111]
 
-        orderbook = ["aeron:udp?control=172.31.14.205:40456|control-mode=dynamic", 111]
-        # настройки publishers осуществляющего отправку баланса
-        #        balance = ["aeron:ipc", 111]
-        balance = ["aeron:ipc", 101]
+orderbook = ["aeron:udp?control=172.31.4.173:40556|control-mode=dynamic", 1001]
+# настройки publishers осуществляющего отправку баланса
+#        balance = ["aeron:ipc", 111]
+balance = ["aeron:udp?control=172.31.4.173:40556|control-mode=dynamic", 1002]
 
-        # настройки publishers осуществляющего отправку логов
-        # ["channel", channel_id]
-        logs = ["aeron:udp?endpoint=3.66.183.27:44444", 1001]
-    # Настройки относящиеся к приему данных.
-    [aeron.subscribers]
-        # канал в котором приходят команды от ядра.
+# настройки publishers осуществляющего отправку логов
+# ["channel", channel_id]
+logs = ["aeron:udp?endpoint=3.66.183.27:44444", 1001]
+# Настройки относящиеся к приему данных.
+[aeron.subscribers]
+# канал в котором приходят команды от ядра.
 #        core = ["aeron:udp?endpoint=54.248.171.18:20121", 555]
-        core = ["aeron:ipc", 103]
+core = ["aeron:udp?endpoint=172.31.4.173:40557|control=172.31.4.173:40556", 1003]

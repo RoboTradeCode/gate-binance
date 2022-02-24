@@ -18,7 +18,11 @@ int ws_depth_to_core(Json::Value &json_result) {
     json_result["u"] = timestamp;
 
     // биржа, от который получены данные
-    json_result["exchange"] = global_config.exchange_name;
+    json_result["exchange"] = "Binance";
+
+    // TODO: Remove when format is standardized
+    // Hotfix by nomnoms12
+    json_result["s"] = json_result["s"] == "BTCUSDT" ? "BTC-USDT" : json_result["s"];
 
     // конвертирую json::value в строку
     std::string message = json_result.toStyledString();

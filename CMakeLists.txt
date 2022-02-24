@@ -7,10 +7,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(SRC_DIR src)
 
 # библиотека BinaCPP
-set(BINACPP_SRC lib/libbinacpp/src)
-set(BINACPP_LIB_DIR lib/libbinacpp/lib/libbinacpp/lib)
-set(WEBSOCKETS_DIR lib/libbinacpp/lib/libwebsockets-2.4.0)
-set(JSONCPP_SRC lib/libbinacpp/lib/jsoncpp-1.8.3/include)
+set(BINACPP_SRC lib/binacpp/src)
+set(BINACPP_LIB_DIR lib/binacpp/lib/libbinacpp/lib)
+set(WEBSOCKETS_DIR lib/binacpp/lib/libwebsockets-2.4.0)
+set(JSONCPP_SRC lib/binacpp/lib/jsoncpp-1.8.3/include)
 
 # библиотека aeron
 set(AERON_DIR lib/aeron)
@@ -27,18 +27,18 @@ find_package(OpenSSL REQUIRED)
 
 add_executable(
         ${PROJECT_NAME}
-#        main file, entry point of gateway
+        #        main file, entry point of gateway
         main.cpp
-#        toml++ library for config
+        #        toml++ library for config
         lib/toml++/toml.h
 
         ${WEBSOCKETS_DIR}/include
-#        own library for working with aeron
+        #        own library for working with aeron
         ${AERON_UTILS_DIR}/Publisher.cpp
         ${AERON_UTILS_DIR}/Publisher.h
         ${AERON_UTILS_DIR}/Subscriber.cpp
         ${AERON_UTILS_DIR}/Subscriber.h
-#        sources
+        #        sources
         ${SRC_DIR}/ws_handlers.cpp
         ${SRC_DIR}/ws_handlers.h
         ${SRC_DIR}/utils.cpp
@@ -49,7 +49,7 @@ add_executable(
         ${SRC_DIR}/order_handlers.cpp
         ${SRC_DIR}/gate_config.h
         ${SRC_DIR}/aeron_channel.h
-#        BinaCPP library
+        #        BinaCPP library
         ${BINACPP_SRC}/binacpp.cpp
         ${BINACPP_SRC}/binacpp_logger.cpp
         ${BINACPP_SRC}/binacpp_utils.cpp
@@ -60,10 +60,10 @@ target_include_directories(
         ${PROJECT_NAME}
         PUBLIC
         ${SRC_DIR}
-#
-#        websockets library, for BinaCPP lib
+        #
+        #        websockets library, for BinaCPP lib
         ${WEBSOCKETS_DIR}/include
-#        JsonCpp library, for BinaCPP lib
+        #        JsonCpp library, for BinaCPP lib
         ${JSONCPP_SRC}
         ${AERON_UTILS_DIR}
         ${BINACPP_SRC}

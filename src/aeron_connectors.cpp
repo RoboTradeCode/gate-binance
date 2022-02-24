@@ -52,8 +52,7 @@ aeron::fragment_handler_t handle_core_order() {
         // логика обработчика
 
         // получаю ордер из aeron в виде строки
-        std::string received_order = std::string(reinterpret_cast<const char *>(buffer.buffer()) + offset,
-                                                 static_cast<std::size_t>(length));
+        std::string received_order = buffer.getString(offset);
 
         std::cout << received_order << std::endl;
         // преобразую строку ордера в json

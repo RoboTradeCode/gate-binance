@@ -1,0 +1,9 @@
+[submodule "libs/aeron_cpp"]
+	path = libs/aeron_cpp
+	url = https://gitlab.com/transport_layer/aeron/aeron_cpp.git
+[submodule "libs/tomlplusplus"]
+	path = libs/tomlplusplus
+	url = https://github.com/marzer/tomlplusplus.git
+[submodule "libs/binacpp"]
+    path = libs/binacpp
+    url = https://github.com/binance-exchange/binacpp.git

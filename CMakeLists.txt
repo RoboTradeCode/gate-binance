@@ -7,14 +7,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(SRC_DIR src)
 
 # библиотека BinaCPP
-set(BINACPP_SRC lib/binacpp/src)
-set(BINACPP_LIB_DIR lib/binacpp/lib/libbinacpp/lib)
-set(WEBSOCKETS_DIR lib/binacpp/lib/libwebsockets-2.4.0)
-set(JSONCPP_SRC lib/binacpp/lib/jsoncpp-1.8.3/include)
+set(BINACPP_SRC libs/binacpp/src)
+set(BINACPP_LIB_DIR libs/binacpp/lib/libbinacpp/lib)
+set(WEBSOCKETS_DIR libs/binacpp/lib/libwebsockets-2.4.0)
+set(JSONCPP_SRC libs/binacpp/lib/jsoncpp-1.8.3/include)
 
 # библиотека aeron
-set(AERON_DIR lib/aeron)
-set(AERON_UTILS_DIR lib/aeron_utils)
+set(AERON_DIR ../aeron)
+set(AERON_UTILS_DIR libs/aeron_utils)
 
 include_directories(${AERON_DIR}/aeron-client/src/main/cpp)
 
@@ -30,7 +30,7 @@ add_executable(
         #        main file, entry point of gateway
         main.cpp
         #        toml++ library for config
-        lib/toml++/toml.h
+        libs/toml++/toml.h
 
         ${WEBSOCKETS_DIR}/include
         #        own library for working with aeron
